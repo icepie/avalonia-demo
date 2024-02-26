@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <PublishAot>true</PublishAot>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+
+  <Target Name="CopyFilesAfterPublish" AfterTargets="AfterPublish">
+    <Copy SourceFiles="$(TargetDir)runtimes/linux-x64/native/libSkiaSharp.so"
+      DestinationFolder="$([System.IO.Path]::GetFullPath('$(PublishDir)'))/bin/" />
+  </Target>
+
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.0.6" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.6" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.6" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.6" />
+    <PackageReference Include="SkiaSharp" Version="2.88.7" ExcludeAssets="native" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.7" />
+    <PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0" />
+    <!--Condition
+    below is needed to remove Avalonia.Diagnostics package from build output in Release
+    configuration.-->
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"
+      Version="11.0.6" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.6" />
+  </ItemGroup>
+</Project>
